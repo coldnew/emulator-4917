@@ -24,7 +24,7 @@
            (->  (nodejs/require "fs")
                 (.readFileSync file "ascii")
                 .toString
-                gcrypt/stringToUtf8ByteArray)
+                gcrypt/stringToByteArray)
            ))))
 
 (defn -main [& args]
