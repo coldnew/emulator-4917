@@ -10,12 +10,11 @@
 
 (defn make-cpu
   ([& {:keys [memory r0 r1 ip is]
-       :or {memory  (vec (repeat 16 0))
-            r0 0
+       :or {r0 0
             r1 0
             ip 0
             is 0}}]
-   (State. memory r0 r1 ip is)))
+   (State. (take 16 (concat memory (repeat 16 0))) r0 r1 ip is)))
 
 (defn terminate-application!
   "Clojure/Clojurescript wrapper for terminate application."
@@ -35,7 +34,7 @@
 (defn cmd1
   [{:keys [memory r0 r1 ip is]}]
   (make-cpu
-   :memory memory :r0 (+ r0 r1) :r1 r1 :ip ip :is is))
+   :memory memory :r0 (+ r0 r1) :r1 r1 :ip (inc ip) :is 1))
 
 ;; cmd 2: R0 = R0 - R1
 (defn cmd2
