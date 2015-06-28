@@ -136,8 +136,8 @@
 (defn to-4bit-array
   "Convert 0xf4 to [f 4]"
   [s]
-  (let [h (bit-shift-right s 4) ;; 0xf4 >> 4   => f
-        l (bit-and s 0x0f)]     ;; 0xf4 & 0x0f => 4
+  (let [h (bit-and (bit-shift-right s 4) 0x0f) ;; 0xf4 >> 4   => f
+        l (bit-and s 0x0f)]                    ;; 0xf4 & 0x0f => 4
     [h l]))
 
 (defn parse-rom
@@ -146,7 +146,9 @@
   (flatten
    (map to-4bit-array
         #?(:clj
-           (.getBytes (slurp file) "ascii")
+           (with-open [out (java.io.ByteArrayOutputStream.)]
+             (clojure.java.io/copy (clojure.java.io/input-stream file) out)
+             (.toByteArray out))
            :cljs
            (->  (nodejs/require "fs")
                 (.readFileSync file "ascii")
