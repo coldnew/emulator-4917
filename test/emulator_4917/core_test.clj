@@ -48,12 +48,12 @@
           cpu (make-cpu :r0 r0 :r1 r1)]
       ;; the result should the same
       ;; TODO: more accurate mock method
-      (is (= cpu (cmd7 cpu)))))
+      (is (= 7 (:is (cmd7 cpu))))))
 
   ;; FIXME: how to mock println correctly ?
   (testing "cmd 8: Print <data>"
     (let [cpu (make-cpu :memory [8 5 0])]
-      (is (= cpu (cmd8 cpu)))))
+      (is (= 8 (:is (cmd8 cpu))))))
 
   (testing "cmd 9: Load value from <data> to R0"
     (let [cpu (make-cpu :memory [9 0 0])]
@@ -65,11 +65,11 @@
 
   (testing "cmd 11: Store R0 into <data> position"
     (let [cpu (make-cpu :memory [11 2 0] :r0 5)]
-      (is (= [11 2 5] (:memory (cmd11 cpu))))))
+      (is (= [11 2 5] (take 3 (:memory (cmd11 cpu)))))))
 
   (testing "cmd 12: Store R1 into <data> position"
     (let [cpu (make-cpu :memory [12 2 0] :r1 5)]
-      (is (= [12 2 5] (:memory (cmd12 cpu))))))
+      (is (= [12 2 5] (take 3 (:memory (cmd12 cpu)))))))
 
   (testing "cmd 13: jump to address <data>"
     (let [cpu (make-cpu :memory [13 2 0])]
