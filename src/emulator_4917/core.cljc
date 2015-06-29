@@ -151,10 +151,10 @@
              (.toByteArray out))
            :cljs
            (->  (nodejs/require "fs")
-                (.readFileSync file "ascii")
+                (.readFileSync file "binary")
                 .toString
-                gcrypt/stringToByteArray)
-           ))))
+                gcrypt/stringToByteArray))
+        )))
 
 (defn -main [& args]
   (let [arg1 (nth args 0)]
