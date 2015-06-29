@@ -40,58 +40,58 @@
 (defn cmd2
   [{:keys [memory r0 r1 ip is]}]
   (make-cpu
-   :memory memory :r0 (- r0 r1) :r1 r1 :ip ip :is is))
+   :memory memory :r0 (- r0 r1) :r1 r1 :ip (inc ip) :is 2))
 
 ;; cmd 3: R0 = R0 + 1
 (defn cmd3
   [{:keys [memory r0 r1 ip is]}]
   (make-cpu
-   :memory memory :r0 (inc r0) :r1 r1 :ip ip :is is))
+   :memory memory :r0 (inc r0) :r1 r1 :ip (inc ip) :is 3))
 
 ;; cmd 4: R1 = R1 + 1
 (defn cmd4
   [{:keys [memory r0 r1 ip is]}]
   (make-cpu
-   :memory memory :r0 r0 :r1 (inc r1) :ip ip :is is))
+   :memory memory :r0 r0 :r1 (inc r1) :ip (inc ip) :is 4))
 
 ;; cmd 5: R0 = R0 - 1
 (defn cmd5
   [{:keys [memory r0 r1 ip is]}]
   (make-cpu
-   :memory memory :r0 (dec r0) :r1 r1 :ip ip :is is))
+   :memory memory :r0 (dec r0) :r1 r1 :ip (inc ip) :is 5))
 
 ;; cmd 6: R1 = R1 - 1
 (defn cmd6
   [{:keys [memory r0 r1 ip is]}]
   (make-cpu
-   :memory memory :r0 r0 :r1 (dec r1) :ip ip :is is))
+   :memory memory :r0 r0 :r1 (dec r1) :ip (inc ip) :is 6))
 
 ;; cmd 7: Ring bell
 (defn cmd7
   [{:keys [memory r0 r1 ip is]}]
   (println "Ring the bell!!")
   (make-cpu
-   :memory memory :r0 r0 :r1 r1 :ip ip :is is))
+   :memory memory :r0 r0 :r1 r1 :ip (inc ip) :is 7))
 
 ;; cmd 8: Print <data>
 (defn cmd8
   [{:keys [memory r0 r1 ip is]}]
   (println (nth memory (inc ip)))
   (make-cpu
-   :memory memory :r0 r0 :r1 r1 :ip ip :is is))
+   :memory memory :r0 r0 :r1 r1 :ip (+ ip 2) :is 8))
 
 ;; cmd 9: Load value from <data> to R0
 (defn cmd9
   [{:keys [memory r0 r1 ip is]}]
   (make-cpu
-   :memory memory :r1 r1 :ip ip :is is
+   :memory memory :r1 r1 :ip (+ ip 2) :is 9
    :r0 (nth memory (nth memory (inc ip)))))
 
 ;; cmd 10: Load value from <data> to R1
 (defn cmd10
   [{:keys [memory r0 r1 ip is]}]
   (make-cpu
-   :memory memory :r0 r0  :ip ip :is is
+   :memory memory :r0 r0 :ip (+ ip 2) :is 10
    :r1 (nth memory (nth memory (inc ip)))))
 
 ;; cmd 11: Store R0 into <data> position
@@ -99,20 +99,20 @@
   [{:keys [memory r0 r1 ip is]}]
   (make-cpu
    :memory (assoc memory (nth memory (inc ip)) r0)
-   :r0 r0 :r1 r1 :ip ip :is is))
+   :r0 r0 :r1 r1 :ip (+ ip 2) :is 11))
 
 ;; cmd 12: Store R1 into <data> position
 (defn cmd12
   [{:keys [memory r0 r1 ip is]}]
   (make-cpu
    :memory (assoc memory (nth memory (inc ip)) r1)
-   :r0 r0 :r1 r1 :ip ip :is is))
+   :r0 r0 :r1 r1 :ip (+ ip 2) :is 12))
 
 ;; cmd 13: jump to address <data>
 (defn cmd13
   [{:keys [memory r0 r1 ip is]}]
   (make-cpu
-   :memory memory :r0 r0 :r1 r1 :ip (nth memory (inc ip)) :is is))
+   :memory memory :r0 r0 :r1 r1 :ip (nth memory (inc ip)) :is 13))
 
 ;; cmd 14: jump to address <data> if R0 == 0
 (defn cmd14
@@ -120,8 +120,8 @@
   (make-cpu
    :memory memory :r0 r0 :r1 r1
    :ip (if (zero? r0)
-         (nth memory (inc ip)) ip)
-   :is is))
+         (nth memory (inc ip)) (+ ip 2))
+   :is 14))
 
 ;; cmd 15: jump to address <data> if R0 != 0
 (defn cmd15
@@ -129,9 +129,10 @@
   (make-cpu
    :memory memory :r0 r0 :r1 r1
    :ip (if (zero? r0)
-         ip
+         (+ ip 2)
          (nth memory (inc ip)))
-   :is is))
+   :is 15))
+
 
 (defn to-4bit-array
   "Convert 0xf4 to [f 4]"
