@@ -73,12 +73,12 @@
 
   (testing "cmd 13: jump to address <data>"
     (let [cpu (make-cpu :memory [13 2 0])]
-      (is (= 2 (:ip (cmd13 cpu))))))
+      (is (= 2 (:pc (cmd13 cpu))))))
 
   (testing "cmd 14: jump to address <data> if R0 == 0"
     (let [cpu (make-cpu :memory [13 2 0] :r0 0)]
-      (is (= 2 (:ip (cmd14 cpu))))))
+      (is (= 2 (:pc (cmd14 cpu))))))
 
   (testing "cmd 15: jump to address <data> if R0 != 0"
     (let [cpu (make-cpu :memory [13 2 0] :r0 1)]
-      (is (= 2 (:ip (cmd15 cpu)))))))
+      (is (= 2 (:pc (cmd15 cpu)))))))

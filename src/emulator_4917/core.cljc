@@ -6,15 +6,15 @@
 ;; enable *print-fn* in clojurescript
 #?(:cljs (enable-console-print!))
 
-(defrecord State [memory r0 r1 ip is])
+(defrecord State [memory r0 r1 pc is])
 
 (defn make-cpu
-  ([& {:keys [memory r0 r1 ip is]
+  ([& {:keys [memory r0 r1 pc is]
        :or {r0 0
             r1 0
-            ip 0
+            pc 0
             is 0}}]
-   (State. (vec (take 16 (concat memory (repeat 16 0)))) r0 r1 ip is)))
+   (State. (vec (take 16 (concat memory (repeat 16 0)))) r0 r1 pc is)))
 
 (defn terminate-application!
   "Clojure/Clojurescript wrapper for terminate application."
@@ -26,116 +26,116 @@
 
 ;; cmd 0: exit
 (defn cmd0
-  [{:keys [memory r0 r1 ip is]}]
+  [{:keys [memory r0 r1 pc is]}]
   (println "Terminate application.")
   (terminate-application!))
 
 ;; cmd 1: R0 = R0 + R1
 (defn cmd1
-  [{:keys [memory r0 r1 ip is]}]
+  [{:keys [memory r0 r1 pc is]}]
   (make-cpu
-   :memory memory :r0 (+ r0 r1) :r1 r1 :ip (inc ip) :is 1))
+   :memory memory :r0 (+ r0 r1) :r1 r1 :pc (inc pc) :is 1))
 
 ;; cmd 2: R0 = R0 - R1
 (defn cmd2
-  [{:keys [memory r0 r1 ip is]}]
+  [{:keys [memory r0 r1 pc is]}]
   (make-cpu
-   :memory memory :r0 (- r0 r1) :r1 r1 :ip (inc ip) :is 2))
+   :memory memory :r0 (- r0 r1) :r1 r1 :pc (inc pc) :is 2))
 
 ;; cmd 3: R0 = R0 + 1
 (defn cmd3
-  [{:keys [memory r0 r1 ip is]}]
+  [{:keys [memory r0 r1 pc is]}]
   (make-cpu
-   :memory memory :r0 (inc r0) :r1 r1 :ip (inc ip) :is 3))
+   :memory memory :r0 (inc r0) :r1 r1 :pc (inc pc) :is 3))
 
 ;; cmd 4: R1 = R1 + 1
 (defn cmd4
-  [{:keys [memory r0 r1 ip is]}]
+  [{:keys [memory r0 r1 pc is]}]
   (make-cpu
-   :memory memory :r0 r0 :r1 (inc r1) :ip (inc ip) :is 4))
+   :memory memory :r0 r0 :r1 (inc r1) :pc (inc pc) :is 4))
 
 ;; cmd 5: R0 = R0 - 1
 (defn cmd5
-  [{:keys [memory r0 r1 ip is]}]
+  [{:keys [memory r0 r1 pc is]}]
   (make-cpu
-   :memory memory :r0 (dec r0) :r1 r1 :ip (inc ip) :is 5))
+   :memory memory :r0 (dec r0) :r1 r1 :pc (inc pc) :is 5))
 
 ;; cmd 6: R1 = R1 - 1
 (defn cmd6
-  [{:keys [memory r0 r1 ip is]}]
+  [{:keys [memory r0 r1 pc is]}]
   (make-cpu
-   :memory memory :r0 r0 :r1 (dec r1) :ip (inc ip) :is 6))
+   :memory memory :r0 r0 :r1 (dec r1) :pc (inc pc) :is 6))
 
 ;; cmd 7: Ring bell
 (defn cmd7
-  [{:keys [memory r0 r1 ip is]}]
+  [{:keys [memory r0 r1 pc is]}]
   (println "Ring the bell!!")
   (make-cpu
-   :memory memory :r0 r0 :r1 r1 :ip (inc ip) :is 7))
+   :memory memory :r0 r0 :r1 r1 :pc (inc pc) :is 7))
 
 ;; cmd 8: Print <data>
 (defn cmd8
-  [{:keys [memory r0 r1 ip is]}]
-  (println (nth memory (inc ip)))
+  [{:keys [memory r0 r1 pc is]}]
+  (println (nth memory (inc pc)))
   (make-cpu
-   :memory memory :r0 r0 :r1 r1 :ip (+ ip 2) :is 8))
+   :memory memory :r0 r0 :r1 r1 :pc (+ pc 2) :is 8))
 
 ;; cmd 9: Load value from <data> to R0
 (defn cmd9
-  [{:keys [memory r0 r1 ip is]}]
+  [{:keys [memory r0 r1 pc is]}]
   (make-cpu
-   :memory memory :r1 r1 :ip (+ ip 2) :is 9
-   :r0 (nth memory (nth memory (inc ip)))))
+   :memory memory :r1 r1 :pc (+ pc 2) :is 9
+   :r0 (nth memory (nth memory (inc pc)))))
 
 ;; cmd 10: Load value from <data> to R1
 (defn cmd10
-  [{:keys [memory r0 r1 ip is]}]
+  [{:keys [memory r0 r1 pc is]}]
   (make-cpu
-   :memory memory :r0 r0 :ip (+ ip 2) :is 10
-   :r1 (nth memory (nth memory (inc ip)))))
+   :memory memory :r0 r0 :pc (+ pc 2) :is 10
+   :r1 (nth memory (nth memory (inc pc)))))
 
 ;; cmd 11: Store R0 into <data> position
 (defn cmd11
-  [{:keys [memory r0 r1 ip is]}]
+  [{:keys [memory r0 r1 pc is]}]
   (make-cpu
-   :memory (assoc memory (nth memory (inc ip)) r0)
-   :r0 r0 :r1 r1 :ip (+ ip 2) :is 11))
+   :memory (assoc memory (nth memory (inc pc)) r0)
+   :r0 r0 :r1 r1 :pc (+ pc 2) :is 11))
 
 ;; cmd 12: Store R1 into <data> position
 (defn cmd12
-  [{:keys [memory r0 r1 ip is]}]
+  [{:keys [memory r0 r1 pc is]}]
   (make-cpu
-   :memory (assoc memory (nth memory (inc ip)) r1)
-   :r0 r0 :r1 r1 :ip (+ ip 2) :is 12))
+   :memory (assoc memory (nth memory (inc pc)) r1)
+   :r0 r0 :r1 r1 :pc (+ pc 2) :is 12))
 
 ;; cmd 13: jump to address <data>
 (defn cmd13
-  [{:keys [memory r0 r1 ip is]}]
+  [{:keys [memory r0 r1 pc is]}]
   (make-cpu
-   :memory memory :r0 r0 :r1 r1 :ip (nth memory (inc ip)) :is 13))
+   :memory memory :r0 r0 :r1 r1 :pc (nth memory (inc pc)) :is 13))
 
 ;; cmd 14: jump to address <data> if R0 == 0
 (defn cmd14
-  [{:keys [memory r0 r1 ip is]}]
+  [{:keys [memory r0 r1 pc is]}]
   (make-cpu
    :memory memory :r0 r0 :r1 r1
-   :ip (if (zero? r0)
-         (nth memory (inc ip)) (+ ip 2))
+   :pc (if (zero? r0)
+         (nth memory (inc pc)) (+ pc 2))
    :is 14))
 
 ;; cmd 15: jump to address <data> if R0 != 0
 (defn cmd15
-  [{:keys [memory r0 r1 ip is]}]
+  [{:keys [memory r0 r1 pc is]}]
   (make-cpu
    :memory memory :r0 r0 :r1 r1
-   :ip (if (zero? r0)
-         (+ ip 2)
-         (nth memory (inc ip)))
+   :pc (if (zero? r0)
+         (+ pc 2)
+         (nth memory (inc pc)))
    :is 15))
 
 (defn execute [state]
   (let [curr
-        (try (nth (:memory state) (:ip state))
+        (try (nth (:memory state) (:pc state))
              (catch
                  #?(:clj
                     Exception
