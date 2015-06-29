@@ -166,7 +166,7 @@
 
 (defn run [command]
   (let [cpu (execute command)]
-    (print cpu)
+    ;; (print cpu)
     (recur cpu)))
 
 (defn to-4bit-array
