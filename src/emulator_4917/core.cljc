@@ -133,6 +133,39 @@
          (nth memory (inc ip)))
    :is 15))
 
+(defn execute [state]
+  (let [curr
+        (try (nth (:memory state) (:ip state))
+             (catch
+                 #?(:clj
+                    Exception
+                    :cljs
+                    js/Error) _ 0))]
+    ;; (println state)
+    (case curr
+      ;; 1-byte instruction
+      1 (cmd1 state)
+      2 (cmd2 state)
+      3 (cmd3 state)
+      4 (cmd4 state)
+      5 (cmd5 state)
+      6 (cmd6 state)
+      7 (cmd7 state)
+      ;; 2-byte instruction
+      8 (cmd8 state)
+      9 (cmd9 state)
+      10 (cmd10 state)
+      11 (cmd11 state)
+      12 (cmd12 state)
+      13 (cmd13 state)
+      14 (cmd14 state)
+      15 (cmd15 state)
+      ;; default
+      (cmd0 state))))
+
+(defn run [command]
+  (let [cpu (execute command)]
+    (recur cpu)))
 
 (defn to-4bit-array
   "Convert 0xf4 to [f 4]"
@@ -160,7 +193,7 @@
 (defn -main [& args]
   (let [arg1 (nth args 0)]
     (if arg1
-      (println (parse-rom arg1))
+      (run (make-cpu :memory (parse-rom arg1)))
       (println "Error: Please specify filename."))))
 
 ;; setup node.js starter point
