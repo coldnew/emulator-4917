@@ -22,5 +22,5 @@
                            :target :nodejs
                            :optimizations :none
                            :pretty-print true}}]}
-  :aot :all
+  :aot [emulator-4917.core]
   :main emulator-4917.core)
