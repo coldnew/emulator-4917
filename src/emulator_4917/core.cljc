@@ -14,7 +14,7 @@
             r1 0
             ip 0
             is 0}}]
-   (State. (take 16 (concat memory (repeat 16 0))) r0 r1 ip is)))
+   (State. (vec (take 16 (concat memory (repeat 16 0)))) r0 r1 ip is)))
 
 (defn terminate-application!
   "Clojure/Clojurescript wrapper for terminate application."
