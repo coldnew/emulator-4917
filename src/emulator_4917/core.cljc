@@ -1,7 +1,8 @@
 (ns emulator-4917.core
   (:require #?(:cljs [cljs.nodejs :as nodejs])
             #?(:cljs [goog.crypt :as gcrypt])
-            [clojure.string :as str]))
+            [clojure.string :as str])
+  #?(:clj (:gen-class)))
 
 ;; enable *print-fn* in clojurescript
 #?(:cljs (enable-console-print!))
@@ -174,21 +175,23 @@
         l (bit-and s 0x0f)]                    ;; 0xf4 & 0x0f => 4
     [h l]))
 
+(defn parse-binary-file
+  [file]
+  #?(:clj
+     (with-open [out (java.io.ByteArrayOutputStream.)]
+       (clojure.java.io/copy (clojure.java.io/input-stream file) out)
+       (.toByteArray out))
+     :cljs
+     (->  (nodejs/require "fs")
+          (.readFileSync file "binary")
+          .toString
+          gcrypt/stringToByteArray)))
+
 (defn parse-rom
   "Parse binary file and convert contents to vector."
   [file]
   (flatten
-   (map to-4bit-array
-        #?(:clj
-           (with-open [out (java.io.ByteArrayOutputStream.)]
-             (clojure.java.io/copy (clojure.java.io/input-stream file) out)
-             (.toByteArray out))
-           :cljs
-           (->  (nodejs/require "fs")
-                (.readFileSync file "binary")
-                .toString
-                gcrypt/stringToByteArray))
-        )))
+   (map to-4bit-array (parse-binary-file file))))
 
 (defn -main [& args]
   (let [arg1 (nth args 0)]
