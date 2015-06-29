@@ -25,98 +25,98 @@
      :cljs
      (.exit nodejs/process 0)))
 
-;; cmd 0: exit
 (defn cmd0
+  "cmd 0: exit application."
   [{:keys [memory r0 r1 pc is]}]
   (println "Terminate application.")
   (terminate-application!))
 
-;; cmd 1: R0 = R0 + R1
 (defn cmd1
+  "cmd 1: R0 = R0 + R1"
   [{:keys [memory r0 r1 pc is]}]
   (make-cpu
    :memory memory :r0 (+ r0 r1) :r1 r1 :pc (inc pc) :is 1))
 
-;; cmd 2: R0 = R0 - R1
 (defn cmd2
+  "cmd 2: R0 = R0 - R1"
   [{:keys [memory r0 r1 pc is]}]
   (make-cpu
    :memory memory :r0 (- r0 r1) :r1 r1 :pc (inc pc) :is 2))
 
-;; cmd 3: R0 = R0 + 1
 (defn cmd3
+  "cmd 3: R0 = R0 + 1"
   [{:keys [memory r0 r1 pc is]}]
   (make-cpu
    :memory memory :r0 (inc r0) :r1 r1 :pc (inc pc) :is 3))
 
-;; cmd 4: R1 = R1 + 1
 (defn cmd4
+  "cmd 4: R1 = R1 + 1"
   [{:keys [memory r0 r1 pc is]}]
   (make-cpu
    :memory memory :r0 r0 :r1 (inc r1) :pc (inc pc) :is 4))
 
-;; cmd 5: R0 = R0 - 1
 (defn cmd5
+  "cmd 5: R0 = R0 - 1"
   [{:keys [memory r0 r1 pc is]}]
   (make-cpu
    :memory memory :r0 (dec r0) :r1 r1 :pc (inc pc) :is 5))
 
-;; cmd 6: R1 = R1 - 1
 (defn cmd6
+  "cmd 6: R1 = R1 - 1"
   [{:keys [memory r0 r1 pc is]}]
   (make-cpu
    :memory memory :r0 r0 :r1 (dec r1) :pc (inc pc) :is 6))
 
-;; cmd 7: Ring bell
 (defn cmd7
+  "cmd 7: Ring bell"
   [{:keys [memory r0 r1 pc is]}]
   (println "Ring the bell!!")
   (make-cpu
    :memory memory :r0 r0 :r1 r1 :pc (inc pc) :is 7))
 
-;; cmd 8: Print <data>
 (defn cmd8
+  "cmd 8: Print <data>"
   [{:keys [memory r0 r1 pc is]}]
   (println (nth memory (inc pc)))
   (make-cpu
    :memory memory :r0 r0 :r1 r1 :pc (+ pc 2) :is 8))
 
-;; cmd 9: Load value from <data> to R0
 (defn cmd9
+  "cmd 9: Load value from <data> to R0"
   [{:keys [memory r0 r1 pc is]}]
   (make-cpu
    :memory memory :r1 r1 :pc (+ pc 2) :is 9
    :r0 (nth memory (nth memory (inc pc)))))
 
-;; cmd 10: Load value from <data> to R1
 (defn cmd10
+  "cmd 10: Load value from <data> to R1"
   [{:keys [memory r0 r1 pc is]}]
   (make-cpu
    :memory memory :r0 r0 :pc (+ pc 2) :is 10
    :r1 (nth memory (nth memory (inc pc)))))
 
-;; cmd 11: Store R0 into <data> position
 (defn cmd11
+  "cmd 11: Store R0 into <data> position"
   [{:keys [memory r0 r1 pc is]}]
   (make-cpu
    :memory (assoc memory (nth memory (inc pc)) r0)
    :r0 r0 :r1 r1 :pc (+ pc 2) :is 11))
 
-;; cmd 12: Store R1 into <data> position
 (defn cmd12
+  "cmd 12: Store R1 into <data> position"
   [{:keys [memory r0 r1 pc is]}]
   (make-cpu
    :memory (assoc memory (nth memory (inc pc)) r1)
    :r0 r0 :r1 r1 :pc (+ pc 2) :is 12))
 
-;; cmd 13: jump to address <data>
 (defn cmd13
+  "cmd 13: jump to address <data>"
   [{:keys [memory r0 r1 pc is]}]
   (make-cpu
    :memory memory :r0 r0 :r1 r1 :pc (nth memory (inc pc)) :is 13))
 
-;; cmd 14: jump to address <data> if R0 == 0
 (defn cmd14
+  "cmd 14: jump to address <data> if R0 == 0"
   [{:keys [memory r0 r1 pc is]}]
   (make-cpu
    :memory memory :r0 r0 :r1 r1
@@ -124,8 +124,8 @@
          (nth memory (inc pc)) (+ pc 2))
    :is 14))
 
-;; cmd 15: jump to address <data> if R0 != 0
 (defn cmd15
+  "cmd 15: jump to address <data> if R0 != 0"
   [{:keys [memory r0 r1 pc is]}]
   (make-cpu
    :memory memory :r0 r0 :r1 r1
@@ -166,6 +166,7 @@
 
 (defn run [command]
   (let [cpu (execute command)]
+    (print cpu)
     (recur cpu)))
 
 (defn to-4bit-array
