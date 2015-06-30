@@ -166,14 +166,14 @@
 
 (defn run [command]
   (let [cpu (execute command)]
-    ;; (print cpu)
+    ;; (print cpu) ; for debug only
     (recur cpu)))
 
 (defn to-4bit-array
   "Convert 0xf4 to [f 4]"
   [s]
-  (let [h (bit-and (bit-shift-right s 4) 0x0f) ;; 0xf4 >> 4   => f
-        l (bit-and s 0x0f)]                    ;; 0xf4 & 0x0f => 4
+  (let [h (bit-and (bit-shift-right s 4) 0x0f) ; (0xf4 >> 4) & 0x0f => f
+        l (bit-and s 0x0f)]                    ; 0xf4 & 0x0f => 4
     [h l]))
 
 (defn parse-binary-file
