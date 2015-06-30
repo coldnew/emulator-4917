@@ -1,0 +1,74 @@
+#+TITLE: emulator-4917 - 4917 emulator based on clojure/clojurescript
+
+# Badge
+[[https://www.eclipse.org/legal/epl-v10.html][https://img.shields.io/badge/license-Eclipse-blue.svg]]
+[[https://travis-ci.org/coldnew/emulator-4917][https://travis-ci.org/coldnew/emulator-4917.svg?branch=master]]
+
+4917 microprocess is an 4-bit cpu designed for [[https://en.wikipedia.org/wiki/University_of_New_South_Wales][University of New South Wales
+(UNSW)]] COMP1917.
+
+This emulator is written by both clojure and clojurescript, I use the Clojure
+1.7 new feature [[http://dev.clojure.org/display/design/Reader%2BConditionals%25EF%25BC%258C%25E4%25B8%2580%25E6%25AC%25A1%25E5%25AF%25A6%25E7%258F%25BE][Reader Conditionals]] to reduce code complexity, you can build
+and running this emulator on JVM or Node.js.
+
+For those interesting how to write 4917 emulator, I write a tutorial here:
+
+[[http://coldnew.github.io/blog/2015/06/29_clojure4917.html][使用 Clojure 打造 4917 微處理器的模擬器]] (Chinese)
+
+I will update the tutorial in English later.
+
+** Usage (JVM)
+
+To execute this emulator on JVM, you can use =lein=
+
+: lein run -- examples/countdown.bin
+
+or compile this application to jar and execute
+
+#+BEGIN_EXAMPLE
+  lein uberjar
+  java -jar target/emulator-4917-0.1.0-SNAPSHOT-standalone.jar examples/countdown.bin
+#+END_EXAMPLE
+
+** Usage (Node.js)
+
+To execute on node.js, one muse compile clojurescript to javascript first
+
+: lein cljsbuild once
+
+This project use =none= optimization by default, you can use =run.js= to execute
+the application
+
+: node run.js examples/countdown.bin
+
+or you also can modify the =project.clj= for advanced optimization
+
+#+BEGIN_SRC clojure
+  :optimizations :advanced
+  :pretty-print false
+#+END_SRC
+
+rebuild to javascript again and start application by node
+
+#+BEGIN_SRC sh
+  lein cljsbuild once
+  node target/emulator-4917.js examples/countdown.bin
+#+END_SRC
+
+** Examples
+
+There are four examples in examples folder: (in binary format)
+
+| file name           | desription            |
+|---------------------+-----------------------|
+| countdown.bin       | countdown from 5 to 1 |
+| countup.bin         | countup from 0        |
+| bell.bin            | ring bell three times |
+| calculate_6+3+1.bin | calculate 6 + 3 + 1   |
+
+** License
+
+Copyright © 2015 Yen-Chin, Lee <coldnew.tw@gmail.com>
+
+Distributed under the Eclipse Public License either version 1.0 or (at
+your option) any later version.
